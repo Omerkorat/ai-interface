@@ -1,0 +1,69 @@
+
+Room object
+	Name
+	Pressure
+	Power
+	Nanogel
+	
+Migrate to git
+
+4. Add more comments
+5. Add an input directory synced by google drive from which users can input data (plots
+, images)
+GUI:
+6. Display graphically numerical data (bars, gauges, etc)
+7. Display pictures
+8. Display plots
+9. Display map
+10. Display the display client output (use text editor on view only mode)
+11. Warning Line
+
+(Package list - tk-tools, tix(.meter), [1], etc...)
+(Consider using easytkinter)
+
+[1] - https://github.com/panchr/Python-Tkinter-Extensions
+
+Future:
+ADD CONTENT
+
+
+
+
+
+
+
+
+Section 2:
+(Lose old special permission)
+Cur-Def=Special: XOR (Not Equiv) (Replace minus)
+
+True-True=False    (Not special permission)
+True-False=True    (Had special permission)
+False-True=True    (Lost default premission, may now regain it with new level)
+False-False=False  (Didn't have permission, not special)
+
+Alternatively (Keep old special permissions)
+Cur-Def=Special: Not Implication (~ =>)
+
+True-True=False    (Not special permission)
+True-False=True    (Had special permission)
+False-True=False    (Lost default premission, may now regain it with new level)
+False-False=False  (Didn't have permission, not special)
+
+(Lose old special permission)
+NDef+Special=Result: Or
+
+True+True=True
+True+False=True
+False+True=True
+False+False=False
+
+Alternatively (Keep old special permissions)
+NDef+Special=Result: (p or q) and ((p and q) or (p->q))
+
+True+True=True
+True+False=False
+False+True=True
+False+False=False
+
+
