@@ -50,7 +50,7 @@ class Network:
         """Establish a connection with given strength between two nodes with indexes i,j."""
         if strength not in self.connections_space:
             raise ValueError("Connection strength must be in %s" % str(self.connections_space))
-        self.mat[i,j] = strength
+        self.mat[i,j] = self.mat[j,i] =strength
     
     def __getitem__(self, item):
         return self.mat[item]
