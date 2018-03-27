@@ -15,7 +15,7 @@ To start the interface, run:
 This will start an instance of the AiInterface class. This class in turn starts a server and a GUI which can communicate with each other and with clients connected to the server. The GUI runs on the main thread, and the server runs on a separate thread. The server and GUI are fields of the AiInterface. 
 To connect to the server as a chat client:
 
-	python main.py -cclien
+	python main.py -cclient
 
 A chat client can type messages to the chat room. AiInterface has a 'while True' loop (the method 'command_loop') which runs on its own thread and constantly checks the server's todo queue. If a message written by a client starts with a word which appears in the list of known system commands, it will be added to the server's todo queue, and the command loop will pop it out of the queue. 
 After a command was popped out of the server it is evaluated by the AiInterface's eval_cmd method,
@@ -30,9 +30,12 @@ To connect for display:
 ## Customization
 
 The parts of this program were written with the intention of being customized for many different purposes. Many parts of this program are templates, and they were accompanied by examples and explanations how to modify them for other purposes. To add system commands, add them to the CMD_TO_HELP constant, which maps command names to their help documentation strings. The server
-will now recognize these commands as valid system commands. To define what a command does, go to
+will now recognize these commands as valid system commands. 
+
+To define what a command does, go to
 AiInterface.cmd_loop and create an if-clause that recognizes this commands and decides what it does.
 Commands can print any output to display clients, and they can interact with the AiInterface's internal variables. For example, it can change permission levels, do computations in the background and save them to the internal dictionary (AiInterface.vars), and interact with the GUI. For examples see AiInterface.
+
 To create new GUI items, use the existing templates. A GUI item is a subclass of Tk.Frame with a show() method. You can define a GUI item as a class with any graphics you wish, and then to display it call its show() method, which will put it on the GUI. It needs to be saved as a variable of AiInterface in order to be available for usage and interaction.
 
 
