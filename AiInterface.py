@@ -7,63 +7,71 @@ from sys import stdout
 from os import mkdir
 from os.path import exists
 
-from constants import *
+from utils import *
 
-HEIGHT, WIDTH = 1500, 800  # Canvas dimensions
-CANVAS_MID_X = WIDTH / 2
-CANVAS_MID_Y = HEIGHT / 2
 
 
 class AiInterface(object):
 
     # A dictionary mapping natural language words into 
-    # the corresponding attribute in this class
+    # Maps natural language words to the corresponding field name. So for example, the command `show map' will
+    # be evaluated as `show self._map', which would in turn call self._map.show().
     name_to_field = {"map" : "_map"}
     
-    # Function to permission level necessary to use it
+    # Function to permission level necessary to use it; by default, no permission is required
     permissions = {
                     '<some-function>' : '<permission-level>'
                 }
     
-        
-    def __init__(self):
+    vars = {}   # Internal variables that can be modified and read by system commands
+    
+    quit_list = [] # For quitting
+    def __init__(self, server_host=DEFAULT_HOST, server_port=DEFAULT_PORT):
         
         self.root = Tk()
         self.root.title("Some Title")
         self.root.geometry("%dx%d" % (HEIGHT, WIDTH))
-        self.vars = {}
-        self.server = ChatServer()
+        self.server = ChatServer(server_host, server_port)
         
         
         # Add graphics:
         
-        self._map = Map()
-        self.prep__map()
+        self._map = Map() # Floor plans
+        self.prep__map() # Defines how the map will look like
         
         # Example. To change specific things, go to the Animation class and edit them
         # In order to control where frames appear, we should parametrize them
         self.clock = DialClock() 
         
-        # Example label
+        # Example label (to change design and text, go to the Label class)
         self.label = Label()
         self.label.show()
         
         # Create input directory if doesn't exist
-        if not exists(INPUT_DIR):
-            mkdir(INPUT_DIR)
+        exists(INPUT_DIR) or mkdir(INPUT_DIR)
+            
         
     def run(self):
         """Start the system."""
         
-        threading.Thread(name="server_t", target=self.server.start).start() # thread for running the server
-        threading.Thread(name="vars_t", target=self.update_loop).start() # thread for evaluating commands
+        threading.Thread(name="server_t", target=self.server.start).start()                     # thread for running the server
+        threading.Thread(name="vars_t", target=self.cmd_loop).start()                           # thread for evaluating commands
+        threading.Thread(name="exit_t", target=exit_thread, args=(self.quit_list,)).start()     # thread for quitting by pressing QUIT_KEY
         self.root.mainloop() # run gui 
     
-    def update_loop(self):
+    def cmd_loop(self):
         """Main user loop of the program. It update animiation and internal variables
         in every time step, and also handles user commands. It repeatedly read the server's 
         command queue, and if it contains a command, pops it and evaluates it."""
         while True:
+            if self.quit_list:
+                # When QUIT_KEY is pressed, exit_thread will add an object to self.quit_list, which
+                # will result in this evaluating to True and then quitting 
+                print("Shutting down...")
+                print("Please switch to the TkInter GUI window to terminate fully (known bug)")
+                self.server.quit()
+                self.root.quit()
+                quit()
             
             # Do something with animation on every time step (example):
             self.root.after(200, self.clock.redraw())
@@ -100,14 +108,17 @@ class AiInterface(object):
                 room, door_id = args[0], eval(args[1])
                 self._map.close_door(room, door_id)
                 self.server.display("Closing door %d in %s" % (door_id, room))
-                
+            elif func == "help":
+                for cmd, docu in CMD_TO_HELP.items():
+                    self.server.display(cmd+":")
+                    self.server.display("  "+docu)    
             else:
-                self.server.display("Command not recognized: " + func)
+                self.server.display("Command not recognized: %s. Type 'help' to see available commands." % func)
             
         except Exception as e:
             print(type(e).__name__+ " occurred: " + str(e))
             
-            self.server.display("Failed to execute command: " + cmd)
+            self.server.display("Failed to execute command: %s" % cmd)
     
     def field_from_name(self, name):
         """Get an instance field from its corresponding name."""
@@ -119,7 +130,7 @@ class AiInterface(object):
     # by the interface        
     
     def prep__map(self):
-        """This defines the map used by this ."""
+        """This defines the map used by this instance. Change to modify the map."""
         
         self._map.draw_polygon_room("engine-room", [(50, 50), (50, 120), (80, 160), (120, 120), (120, 50)], "blue", "red",
                                     [

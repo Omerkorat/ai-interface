@@ -7,11 +7,7 @@
 #
 #
 # i=0
-# with progressbar(range(2**10), fill_char="=", empty_char=".") as bar:
-#     for item in bar:
-#         i+=item
-#         time.sleep(.009)
-# print("Result:", i)
+
 
 import cmd
 import argparse
@@ -21,17 +17,19 @@ import select
 import threading
 import time
 import winsound
-from constants import *
 from sys import stdout
-from utils import pad
+
+from utils import *
 
 class Client:
 
     run_loop=[1]
+    quit_list = []
     identity = ""
     prompt = ""
+
     # Standard pythonic way to implement abstract methods
-    def run(self, host=HOST, port=PORT):
+    def run(self, host=DEFAULT_HOST, port=DEFAULT_PORT):
         raise NotImplementedError
 
     def connect(self, host, port):
@@ -52,9 +50,8 @@ class Client:
     def recv_messages(self):
         """Recieves messages from the server."""
         while self.run_loop:  # Run until sent_t stops, in which case self.run_loop will be popped
-
             try:
-                sock = select.select([self.socket], [], [])[0][0]  # This should be discarded and  only socket used
+                sock = select.select([self.socket], [], [])[0][0]
                 data = sock.recv(RECV_BUFFER).decode()
                 if data:
                     stdout.write(data+"\n" + self.prompt)
@@ -81,18 +78,17 @@ class Client:
 class ChatClient(Client):
     """A client for sending and receiving text messages and commands to a server."""
     identity = CHAT_CLIENT
-    "79.181.140.220"
     
-    def run(self, host=HOST, port=PORT):
-        print("Connectiong to host %s:%s..." %(HOST, PORT))
+    def run(self, host=DEFAULT_HOST, port=DEFAULT_PORT):
+        print("Connectiong to host %s:%s..." %(host, port))
         self.connect(host,port)
 
         # Login:
         username_prompt = self.receive()
         self.username = pad(input(username_prompt),USERNAME_LENGTH)
         self.send(self.username)
-        print ("Welcome, %s." % self.username)
-        print("type %s to quit." % QUIT_CMD)
+        print ("Welcome, %s." % self.username.strip())
+        print("type %s to quit. Type 'help' to print available commands to display clients." % QUIT_CMD)
         self.prompt = "[%s] " % self.username
 
         # Invoke a thread with the send_messages function, allowing messages to now be sent
@@ -125,8 +121,10 @@ class ChatClient(Client):
 class DispClient(Client):
     """A client that only displays detailed system information."""
     identity = DISP_CLIENT
-
-    def run(self, host="localhost", port=PORT):
+    
+    def run(self, host=DEFAULT_HOST, port=DEFAULT_PORT):
         self.connect(host, port)
+        print ("Connected in display mode. Full system output will be printed here.")
+        print("This client will stay connected to the server until it shuts down.")
         self.recv_messages()
 

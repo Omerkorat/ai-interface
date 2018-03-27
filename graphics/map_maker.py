@@ -122,13 +122,13 @@ class MapFrame(Frame):
 ##########################################################
 
 
-def rotate(points, angle, center):
+def rotate(points, angle, pad):
     """Rotate a set of points in given angle relative to given
-    center."""
+    pad."""
     angle = math.radians(angle)
     cos_val = math.cos(angle)
     sin_val = math.sin(angle)
-    cx, cy = center
+    cx, cy = pad
     new_points = []
     for x_old, y_old in points:
         x_old -= cx
