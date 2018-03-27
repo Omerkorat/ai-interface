@@ -8,6 +8,7 @@ from os import mkdir
 from os.path import exists
 
 from utils import *
+from network import Network
 
 
 
@@ -33,6 +34,9 @@ class AiInterface(object):
         self.root.geometry("%dx%d" % (HEIGHT, WIDTH))
         self.server = ChatServer(server_host, server_port)
         
+        # This is how you use a network to represent floor plans
+        # You can now use it to interact with the GUI and apply system commands to it
+        self.room_network = Network(["engine-room", "control-room", "main-hangar"])
         
         # Add graphics:
         

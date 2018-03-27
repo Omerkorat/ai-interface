@@ -14,7 +14,7 @@ from pandas.core.frame import DataFrame
 
 class Network:
     
-    def __init__(self, m=None, connections_space={0,1}, node_labels=None, is_symmetric = True):
+    def __init__(self, m=None, node_labels=None, connections_space={0,1}, is_symmetric = True):
         
         """
         :param m: number of nodes.
