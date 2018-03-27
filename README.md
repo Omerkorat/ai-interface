@@ -5,6 +5,7 @@ system commands. System commands are passed to the host and can interact with th
 
 The GUI currently runs only on the host process, so if you are connected from a different machine you cannot see the GUI. This will be changed in future versions.
 
+
 ## Usage
 
 To start the interface, run:
