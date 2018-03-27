@@ -1,3 +1,23 @@
+"""
+This module defines classes of graphics objects that can be added to the TkInter GUI.
+Each class subclasses the Frame class from TkInter, and has a .show() method that
+displays this class on the TkInter main canvas. TkInter works in such a way that it 
+can only run on the main thread, so there is no need to pass a canvas to the Frame - 
+by calling the show method, it will be displayed on the main canvas.
+Colors names are taken from TkInter. 
+
+Classes:
+
+    Label
+        Template for displaying text on the GUI.
+    DialClock
+        Example of how to do animation.
+    Map
+        Class for drawing floor plans.
+
+"""
+
+
 import math
 from cmath import sqrt
 
@@ -25,18 +45,14 @@ except ImportError:
     hasPIL = False
 
 
-# Constants:
-
-BACKGROUND_COLOR = "white"
-WALL_WIDTH = 5
-DOOR_LENGTH = 20
+from utils import *
 
 
 # API:
 
 
 class Label(Frame):
-    
+    """Template of label that displays some text. Edit it to define custom text and format."""
     def __init__(self):
         super().__init__()
         self.canvas = Canvas(self)
@@ -53,6 +69,8 @@ class Label(Frame):
         self.canvas.configure(background=BACKGROUND_COLOR)
         self.canvas.pack(side=side, expand=0)
         self.canvas.create_text(50,50,text='hello', font="Times 20 italic bold")
+    
+    
     def change_color(self):
         current_color = self.box.cget("background")
         next_color = "green" if current_color == "red" else "red"
@@ -60,7 +78,7 @@ class Label(Frame):
         
 
 class DialClock(Frame):
-    
+    """Example on how to define an animated frame that can fit into the GUI."""
 
     def __init__(self):
         super().__init__()
@@ -88,6 +106,7 @@ class DialClock(Frame):
         self.poll()
     
     def show(self, side=RIGHT):
+        """When this method is called, this frame is added to the GUI."""
         
         # Parameters that control the box where the box 
         # is displayed. 
@@ -189,6 +208,32 @@ class DialClock(Frame):
 #         self.root.after(200, self.poll)
         
 class Map(Frame):
+    """This class defines a canvas you can draw floorplans map on.
+    It has methods that add walls, rooms and doors to the floorplans.
+    To use, first define a Map object and then add items to it. When you want
+    to display it, call the show() method and it will be displayed
+    on the main GUI.
+    After a map is displayed you can still interact with it. For example, you can change wall
+    colors and you can open and close doors or add objects. 
+    Rooms need names so you can refer to them when you perform actions on the map.
+    
+    
+    For example:
+    
+    m = Map()
+    m.draw_polygon_room("engine-room", [(50, 50), (50, 120), (80, 160), (120, 120), (120, 50)], "blue", "red",
+                                    [
+                                        [0, 10, "green"],
+                                        [1, 10, "green"],
+                                        [2, 10, "green"],
+                                        [3, -40, "green"],
+                                        [4, -40, "green"],
+                                    ]) 
+    
+    m.show()
+    m.open_door("engine-room", 0) # Open first door
+    m.close_door("engine-room", 0) # Open first door
+    """
     
     def __init__(self):
         super().__init__()
@@ -206,19 +251,30 @@ class Map(Frame):
         self.canvas.pack(side=side, expand=0)
 
     def draw_wall(self, x1, y1, x2, y2, color):
+        """Draws a rectangle with given coordinates in given color."""
         wall = Wall((x1, y1), (x2, y2), color)
         wall.draw(self.canvas)
 
     def draw_polygon_room(self, name, points, wall_color, background_color, doors):
+        """Draws a polygon with corners in @points. Each point in @points is a tuple
+        (x,y) of 2d coordinates. Doors format: (wall_id, offset, door_color). Offset is the number of pixels
+        that are between the door's start and the wall's start. So for example if 
+        offset is 1/2 the wall's size, then the door will start at the middle of the wall.
+        To refer to doors of a room, you will need to use their indices, which are defined 
+        in the same order they were passed to the room.
+        """
         room = PolygonRoom(points, wall_color, background_color, doors)
         room.draw(self.canvas)
         self.objs[name] = room
 
     def open_door(self, room_name, door_ind):
+        """Marks door as open on the map."""
+        
         room = self.objs[room_name]
         room.open_door(door_ind, self.canvas)
 
     def close_door(self, room_name, door_ind):
+        """Returns open door to its default state."""
         room = self.objs[room_name]
         room.close_door(door_ind, self.canvas)
 
@@ -229,6 +285,8 @@ class Map(Frame):
             door.draw(self.canvas)
 
     def add_image(self, path, x, y, basewidth):
+        """Adds an image to the map in position @x and @y with width @basewidth
+        to the map taken from @path."""
         # Example how to show image:
         image = Image.open(path, self.canvas)
 
@@ -240,19 +298,41 @@ class Map(Frame):
         photo = ImageTk.PhotoImage(image)
         #root.one = photo
         self.canvas.create_image(x, y, image=photo)
+
+
+def map_example():
+    """Run this from main.py to show this map by itself:
+        python main.py --map-ex
+    """
+    root = Tk()
+    root.title("Some Title")
+    root.geometry("%dx%d" % (HEIGHT, WIDTH))
+    m = Map()
+    m.draw_polygon_room("engine-room", [(50, 50), (50, 120), (80, 160), (120, 120), (120, 50)], "blue", "red",
+                                    [
+                                        [0, 10, "green"],
+                                        [1, 10, "green"],
+                                        [2, 10, "green"],
+                                        [3, -40, "green"],
+                                        [4, -40, "green"],
+                                    ]) 
     
-    # internal:
+    m.show()
+    m.open_door("engine-room", 0) # Open first door
+    root.mainloop()
+    
+# internal:
     
 ##########################################################
 
 
-def rotate(points, angle, center):
+def rotate(points, angle, pad):
     """Rotate a set of points in given angle relative to given
-    center."""
+    pad."""
     angle = math.radians(angle)
     cos_val = math.cos(angle)
     sin_val = math.sin(angle)
-    cx, cy = center
+    cx, cy = pad
     new_points = []
     for x_old, y_old in points:
         x_old -= cx
@@ -371,12 +451,15 @@ class Room(MapObject):
 
 
 class PolygonRoom(Room):
-    """Draws a polygon room with a list of points and doors."""
+    """Draws a polygon room with a list of points and doors.""" 
+        
 
     def __init__(self, points, wall_color, background_color, doors):
-        """Doors format: (wall_id, offset, door_color). Offset is the number of pixels
+        """Each point is a 2-tuple of x and y values. 
+        Doors format: (wall_id, offset, door_color). Offset is the number of pixels
         that are between the door's start and the wall's start. So for example if 
         offset is 1/2 the wall's size, then the door will start at the middle of the wall."""
+        
         self.points, self.wall_color, self.background_color, self.door_vars = points, wall_color, background_color, doors
         self.points.append(points[0])
         super().__init__(self)
@@ -413,4 +496,5 @@ class PolygonRoom(Room):
             door = Door((start_x, start_y), m, color, self.background_color)
             self.doors.append(door)
             door.draw(canvas)
+
 
