@@ -19,7 +19,7 @@ class AiInterface(object):
     # be evaluated as `show self._map', which would in turn call self._map.show().
     name_to_field = {"map" : "_map"}
     
-    # Function to permission level necessary to use it; by default, no permission is required
+    # Maps sytstem commands to permission level required to use it; by default, no permission is required
     permissions = {
                     '<some-function>' : '<permission-level>'
                 }
@@ -36,7 +36,7 @@ class AiInterface(object):
         
         # This is how you use a network to represent floor plans
         # You can now use it to interact with the GUI and apply system commands to it
-        self.room_network = Network(["engine-room", "control-room", "main-hangar"])
+        self.room_network = Network(node_labels=["engine-room", "control-room", "main-hangar"])
         
         # Add graphics:
         

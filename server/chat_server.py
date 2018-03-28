@@ -118,7 +118,7 @@ class ChatServer:
                             print ("New Display client connected from address %s" % (addr[0]))
                         else:
                             print ("[%s] connected from address %s with permission level %d" % (
-                                username,addr[0], self.socket_to_client[new_socket].permission_level))
+                                username.strip(),addr[0], self.socket_to_client[new_socket].permission_level))
 
                         if self.socket_to_client[new_socket].username and self.socket_to_client[new_socket].username!=AI_USERNAME:
                             self.broadcast("[%s] entered the terminal" % self.socket_to_client[new_socket].username.strip(),

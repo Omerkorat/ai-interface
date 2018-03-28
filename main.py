@@ -6,6 +6,8 @@ import sys, argparse
 from constants import *
 
 
+
+
 def main(args):
     if args.map_ex:
         from graphics.frames import map_example
