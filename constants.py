@@ -75,6 +75,8 @@ USERNAME_TO_PERMISSION_LEVEL[AI_USERNAME] = AI_PERMISSION
 # The reason is that we do not want to enable keyboard input for the latter two, and if there is no input,
 # then quitting has to happen in a separate window on a different thread using the exit_thread function. 
 QUIT_KEY = "q"          # Press this key to shit down AiInterface or a display client
+QUIT_CMD = ":q"         # disconnects from terminal as a chat client
+
 
 BEEP_FREQ = 1000
 BEEP_DURATION = 500     # Set Duration To 500 ms == .5 seconds

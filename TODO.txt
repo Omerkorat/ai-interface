@@ -9,6 +9,7 @@ Room object
 Add an input directory synced by google drive from which users can input data (plots, images)
 
 GUI:
+	Add time strings
 	Display GUI for clients
 	Display graphically numerical data (bars, gauges, etc)
 	Display pictures
