@@ -87,7 +87,7 @@ USERNAME_LENGTH = 12
 CMD_TO_HELP = {
     "open" : "Open a door on the map. Args: room name (string), door index (int)",  
     "close" : "Close a door on the map. Args: room name (string), door index (int)",
-    "show" : "Show a gui item. Args: AiInterface graphics object name. Currently defined: map, clock.",
+    "show" : "Show an item in the graphics display. Args: AiInterface graphics object name. Currently defined: map, clock.",
     "help" : "Show this message",
 }
 SYSTEM_COMMANDS = sorted(list(CMD_TO_HELP.keys()))
@@ -106,7 +106,7 @@ COLORS = ('b', 'g', 'r', 'c', 'm', 'y', 'k')
 LINE_STYLES = ['_', '-', '--', ':']
 
 
-# GUI constants
+# graphics display constants
 HEIGHT, WIDTH = 1500, 800       # Canvas dimensions
 CANVAS_MID_X = WIDTH / 2        
 CANVAS_MID_Y = HEIGHT / 2

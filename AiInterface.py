@@ -35,7 +35,7 @@ class AiInterface(object):
         self.server = ChatServer(server_host, server_port)
         
         # This is how you use a network to represent floor plans
-        # You can now use it to interact with the GUI and apply system commands to it
+        # You can now use it to interact with the graphics display and apply system commands to it
         self.room_network = Network(node_labels=["engine-room", "control-room", "main-hangar"])
         
         # Add graphics:
@@ -56,7 +56,7 @@ class AiInterface(object):
         threading.Thread(name="server_t", target=self.server.start).start()                     # thread for running the server
         threading.Thread(name="vars_t", target=self.cmd_loop).start()                           # thread for evaluating commands
         threading.Thread(name="exit_t", target=exit_thread, args=(self.quit_list,)).start()     # thread for quitting by pressing QUIT_KEY
-        self.root.mainloop() # run gui 
+        self.root.mainloop()                                                                    # run graphics display 
     
     def cmd_loop(self):
         """Main user loop of the program. It update animiation and internal variables
@@ -67,7 +67,7 @@ class AiInterface(object):
                 # When QUIT_KEY is pressed, exit_thread will add an object to self.quit_list, which
                 # will result in this evaluating to True and then quitting 
                 print("Shutting down...")
-                print("Please switch to the TkInter GUI window to terminate fully (known bug)")
+                print("Please switch to the TkInter window to terminate fully (known bug)")
                 self.server.quit()
                 self.root.quit()
                 quit()

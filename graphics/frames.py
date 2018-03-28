@@ -1,5 +1,5 @@
 """
-This module defines classes of graphics objects that can be added to the TkInter GUI.
+This module defines classes of graphics objects that can be added to the TkInter display.
 Each class subclasses the Frame class from TkInter, and has a .show() method that
 displays this class on the TkInter main canvas. TkInter works in such a way that it 
 can only run on the main thread, so there is no need to pass a canvas to the Frame - 
@@ -9,7 +9,7 @@ Colors names are taken from TkInter.
 Classes:
 
     Label
-        Template for displaying text on the GUI.
+        Template for displaying text on the graphics display.
     DialClock
         Example of how to do animation.
     Map
@@ -78,7 +78,7 @@ class Label(Frame):
         
 
 class DialClock(Frame):
-    """Example on how to define an animated frame that can fit into the GUI."""
+    """Example on how to define an animated frame that can fit into the graphics display."""
 
     def __init__(self):
         super().__init__()
@@ -106,7 +106,7 @@ class DialClock(Frame):
         self.poll()
     
     def show(self, side=RIGHT):
-        """When this method is called, this frame is added to the GUI."""
+        """When this method is called, this frame is added to the graphics display."""
         
         # Parameters that control the box where the box 
         # is displayed. 
@@ -212,7 +212,7 @@ class Map(Frame):
     It has methods that add walls, rooms and doors to the floorplans.
     To use, first define a Map object and then add items to it. When you want
     to display it, call the show() method and it will be displayed
-    on the main GUI.
+    on the main graphics display.
     After a map is displayed you can still interact with it. For example, you can change wall
     colors and you can open and close doors or add objects. 
     Rooms need names so you can refer to them when you perform actions on the map.
