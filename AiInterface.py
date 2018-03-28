@@ -8,7 +8,7 @@ from os import mkdir
 from os.path import exists
 
 from utils import *
-from network import Network
+from backend.network import Network
 
 
 
@@ -49,7 +49,6 @@ class AiInterface(object):
         
         # Example label (to change design and text, go to the Label class)
         self.label = Label()
-        self.label.show()
         
     def run(self):
         """Start the system."""
@@ -111,7 +110,8 @@ class AiInterface(object):
             elif func == "help":
                 for cmd, docu in CMD_TO_HELP.items():
                     self.server.display(cmd+":")
-                    self.server.display("  "+docu)    
+                    self.server.display("  "+docu)
+                        
             else:
                 self.server.display("Command not recognized: %s. Type 'help' to see available commands." % func)
             

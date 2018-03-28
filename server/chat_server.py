@@ -145,9 +145,10 @@ class ChatServer:
                             feedback = "\n" + feedback
 
                         # Broadcast message and feedback (if exists) to everyone
-                        self.broadcast('\r[' + self.socket_to_client[sock].username + '] '
-                                       + data + feedback, 
-                                       filter(lambda s:s!=sock, self.chat_sockets))
+                        if data!=QUIT_CMD:
+                            self.broadcast('\r[' + self.socket_to_client[sock].username + '] '
+                                           + data + feedback, 
+                                           filter(lambda s:s!=sock, self.chat_sockets))
                     # No connection
                     except Exception as e:
 
@@ -191,8 +192,8 @@ class ChatServer:
                     del self.socket_to_client[socket]
 
     def display(self, message):
-        self.broadcast("[System] " + message, self.disp_sockets)
-        
+        self.broadcast(message, self.disp_sockets)
+        time.sleep(.01)
         
     def send(self, sock, msg):
         sock.send(msg.encode())
