@@ -51,10 +51,6 @@ class AiInterface(object):
         self.label = Label()
         self.label.show()
         
-        # Create input directory if doesn't exist
-        exists(INPUT_DIR) or mkdir(INPUT_DIR)
-            
-        
     def run(self):
         """Start the system."""
         
