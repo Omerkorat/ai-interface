@@ -19,7 +19,34 @@ import time
 import winsound
 from sys import stdout
 
-from utils import *
+try:
+    from utils import *
+    print("Running clients.py in administrator mode")
+    print("Variables are imported from utils.py")
+except ImportError:
+    print("Running clients.py in client mode")
+    print("Variables are defined locally.")
+    print("Please make sure these definitions match those of the server you are trying to conect to.")
+    
+    # This is the address the client is trying to connect to and the server is built at by default
+    DEFAULT_HOST = "localhost" 
+    # The port through which connections are made
+    DEFAULT_PORT = 5006 
+    # Maximum size of messages that can be sent or received
+    RECV_BUFFER = 4096  
+    # Can type and read messages to the chat room and actiavte system commands
+    CHAT_CLIENT = "chat-client"         
+    # This is a window where the full output of system commands is displayed
+    DISP_CLIENT = "disp-client"         
+    # Max username length
+    USERNAME_LENGTH = 12
+    # disconnects from terminal as a chat client
+    QUIT_CMD = ":q"         
+
+    def pad(string, length, pad_char= ' '):
+        """Put @string in the middle of a @lenght-long sequence of @pad_char,
+        truncating it if necessary."""
+        return string[:length].center(length,pad_char)
 
 class Client:
 
@@ -128,3 +155,21 @@ class DispClient(Client):
         print("This client will stay connected to the server until it shuts down.")
         self.recv_messages()
 
+if __name__ == '__main__':
+    # Parse runtime options from command line
+    parser = argparse.ArgumentParser()
+
+    # Options:
+    parser.add_argument("-cclient", action="store_true", default=False, help="Start chat client.")
+    parser.add_argument("-dclient", action="store_true", default=False, help="Start display client.")
+    parser.add_argument("-host", type=str, default=DEFAULT_HOST, help="Host IP address string to connect/start a server in. To connect locally use localhost.")
+    parser.add_argument("-port",type=int, default=DEFAULT_PORT, help="Port to connect/start a server in. Default: 5006.")
+    
+    # Now get a list of options and all their arguments
+    args = parser.parse_args()
+    
+    if args.cclient:
+        ChatClient().run(args.host, args.port)
+    elif args.dclient:
+        DispClient().run(args.host, args.port)
+    
