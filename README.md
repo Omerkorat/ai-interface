@@ -4,7 +4,7 @@ This program defines a template for a multi-user interface with a graphics displ
 
 The graphics display currently runs only on the host process, so if you are connected from a different machine you cannot see the graphics display, only the chat server and the display server. This will be changed in future versions.
 
-## Usage
+### Usage
 
 To start the interface, run:
 
@@ -25,7 +25,7 @@ To connect for display:
 	python main.py -dclient
 	
 	
-## Customization
+### Customization
 
 The parts of this program were written with the intention of being customized for many different purposes. Many parts of this program are templates, and they were accompanied by examples and explanations how to modify them for other purposes. To add system commands, add them to the CMD_TO_HELP constant in constants.py, which maps command names to their help documentation strings. The server
 will now recognize these commands as valid system commands. 
@@ -36,7 +36,7 @@ To create new graphics display items, use the existing templates. A graphics dis
 
 To define permission levels for system commands, update the AiInterface.permissions variable. This variable maps system commands into required permission level. To define the permission given to a certain user, update USERNAME_TO_PERMISSION_LEVEL in constants.py. This dictionary maps usernames to their permission level. By default, users receive permission levels of 3, and system commands require no permission.
 
-## Remote conection
+### Remote conection
  
  
 To connect remotely to a server, you should pass its public IP address as the host parameter. If you are connected via a public network or a router, your public IP is the address of that network/router, and you have to make sure that the server starts on a port which is routed to your machine upon incoming connections to your network/router. 
